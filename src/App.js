@@ -1,7 +1,8 @@
 import React, {useRef, useState} from "react";
 import './styles/App.css'
 import PostList from "./components/PostList";
-import MyButton from "./components/UI/button/MyButton";
+import PostForm from "./components/PostForm";
+import MySelect from "./components/UI/select/MySelect";
 import MyInput from "./components/UI/input/MyInput";
 
 function App() {
@@ -11,34 +12,50 @@ function App() {
         {id: 3, title: 'JavaScript3', body: 'JavaScript язык программирования'},
     ])
 
-    const [title, setTitle] = useState("")
-    const bodyInputRef = useRef();
-    const addNewPost = (e) => {
-        e.preventDefault()
+    const [selectedSort, setSelectedSort] = useState('')
+    const [searchQuery, setSearchQuery] = useState('')
+
+    const createPost = (newPost) =>  {
+        setPosts([...posts, newPost])
     }
+
+    const removePost = (post) =>  {
+        setPosts(posts.filter(p => p.id !== post.id))
+    }
+
+    const sortPost = (sort) => {
+        setSelectedSort(sort);
+        setPosts([...posts].sort((a,b)=> a[sort].localeCompare(b[sort])))
+    }
+
   return (
     <div className="App">
-        <form action="#">
-            {/*Управляемый компонент*/}
+        <PostForm create={createPost}/>
+        <hr style={{margin: "20px 0"}}/>
+        <div>
             <MyInput
-                value={title}
-                onChange={e => setTitle(e.target.value)}
-                type="text"
-                placeholder='Название поста'
+                value={searchQuery}
+                onChange={e => setSearchQuery(e.target.value)}
+                placeholder="Поиск ..."
             />
-            {/*Не управляемый\ Не кнтролируемый коммпонент*/}
-            <MyInput
-                ref={bodyInputRef}
-                type="text"
-                placeholder='Описане поста'
+            <MySelect
+                value={selectedSort}
+                onChange={sortPost}
+                defaultValue="Сортировка"
+                options={[
+                    {value: 'title', name: 'По названию'},
+                    {value: 'body', name: 'По описсанию'},
+                ]}
             />
-            <MyButton
-                onClick={addNewPost}
-            >
-                Создать пост
-            </MyButton>
-        </form>
-        <PostList posts={posts} title='Посты про JS'/>
+        </div>
+        {posts.length !==0
+            ?
+            <PostList remove={removePost} posts={posts} title='Посты про JS'/>
+            :
+            <h1 style={{textAlign: "center"}}>
+                Посты не найдены!
+            </h1>
+        }
     </div>
   );
 }
