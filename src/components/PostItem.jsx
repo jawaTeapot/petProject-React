@@ -1,7 +1,7 @@
 import React from 'react';
 import MyButton from "./UI/button/MyButton";
 
-const Postitem = (props) => {
+const PostItem = (props) => {
     return (
         <div className="post">
             <div className="post__content">
@@ -21,4 +21,4 @@ const Postitem = (props) => {
     );
 };
 
-export default Postitem;
+export default PostItem;
